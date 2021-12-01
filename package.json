@@ -1,0 +1,32 @@
+{
+  "name": "sasapi",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/YoYolops/sasapi",
+  "author": "Yohan Lopes <yohanhxh@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "NODE_ENV=test yarn jest -i --runInBand",
+    "dev": "NODE_ENV=dev nodemon ./server.js",
+    "start": "node ./server.js",
+    "pop": "NODE_ENV=dev node ./robots/pop.robot.js",
+    "poprod": "node ./src/pop/pop.robot.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "joi": "^17.4.3",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.16.4",
+    "@babel/preset-env": "^7.16.4",
+    "babel-jest": "^27.4.2",
+    "eslint": "^8.3.0",
+    "faker": "^5.5.3",
+    "jest": "^27.4.3",
+    "nodemon": "^2.0.15"
+  }
+}
