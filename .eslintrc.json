@@ -16,9 +16,7 @@
             {
                 "js": "ignorePackages"
             }
-        ]
-    },
-    "options": {
+        ],
         "indent": ["error", 4]
     }
 }
