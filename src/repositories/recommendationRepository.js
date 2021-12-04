@@ -23,7 +23,11 @@ async function create(name, artist, youtubelink) {
         'INSERT INTO songs (name, artist, ytlink) VALUES ($1, $2, $3) RETURNING *;',
         [name, artist, youtubelink],
     );
-    return dbResponse.rows[0];
+
+    const createdEntity = dbResponse.rows[0];
+    createdEntity.name = `${createdEntity.artist} - ${createdEntity.name}`;
+
+    return createdEntity;
 }
 
 async function changeScore(songId, value, type) {

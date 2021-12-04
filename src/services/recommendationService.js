@@ -50,7 +50,13 @@ async function register(body) {
     if (alreadyRegisteredSong) throw new ConflictError('This song is already registered');
 
     const response = await recommendationRepository.create(song, artist, youtubelink);
-    return response;
+    const formattedData = {
+        id: response.id,
+        name: `${response.artist} - ${response.name}`,
+        youtubeLink: response.ytlink,
+        score: response.score,
+    };
+    return formattedData;
 }
 
 async function vote(songId, value, type) {
@@ -61,7 +67,13 @@ async function vote(songId, value, type) {
     if (!voteResult) throw new NotFoundError('The song was deleted before the vote could be computed');
 
     if (voteResult.score < -5) await recommendationRepository.deleteById(voteResult.id);
-    return voteResult;
+    const formattedData = {
+        id: voteResult.id,
+        name: `${voteResult.artist} - ${voteResult.name}`,
+        youtubeLink: voteResult.ytlink,
+        score: voteResult.score,
+    };
+    return formattedData;
 }
 
 async function topRecommendations(amount) {
@@ -69,7 +81,7 @@ async function topRecommendations(amount) {
     const formattedData = recommendations.map((obj) => ({
         id: obj.id,
         name: `${obj.artist} - ${obj.name}`,
-        youtubelink: obj.ytlink,
+        youtubeLink: obj.ytlink,
         score: obj.score,
     }));
     return formattedData;
@@ -88,7 +100,13 @@ async function randomRecommendation() {
     if (!drawn) drawn = await recommendationRepository.getRandom();
     if (!drawn) throw new NotFoundError('There is not any song registered yet');
 
-    return drawn;
+    const formattedData = {
+        id: drawn.id,
+        name: `${drawn.artist} - ${drawn.name}`,
+        youtubeLink: drawn.ytlink,
+        score: drawn.score,
+    };
+    return formattedData;
 }
 
 const recommendationService = {
