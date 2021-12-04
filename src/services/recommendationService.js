@@ -75,10 +75,27 @@ async function topRecommendations(amount) {
     return formattedData;
 }
 
+async function randomRecommendation() {
+    const random = Math.random();
+
+    let drawn;
+    if (random <= 0.3) {
+        drawn = await recommendationRepository.getRandom('score < 11');
+    } else {
+        drawn = await recommendationRepository.getRandom('score > 10');
+    }
+
+    if (!drawn) drawn = await recommendationRepository.getRandom();
+    if (!drawn) throw new NotFoundError('There is not any song registered yet');
+
+    return drawn;
+}
+
 const recommendationService = {
     register,
     vote,
     topRecommendations,
+    randomRecommendation,
 };
 
 export default recommendationService;

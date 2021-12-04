@@ -50,6 +50,15 @@ async function getTop(amount) {
     return dbResult.rows;
 }
 
+async function getRandom(where) {
+    const query = where
+        ? `SELECT * FROM songs WHERE ${where} ORDER BY RANDOM() LIMIT 1;`
+        : 'SELECT * FROM songs ORDER BY RANDOM() LIMIT 1;';
+
+    const dbResponse = await connection.query(query);
+    return dbResponse.rows[0];
+}
+
 const recommendationRepository = {
     create,
     find,
@@ -57,6 +66,7 @@ const recommendationRepository = {
     changeScore,
     deleteById,
     getTop,
+    getRandom,
 };
 
 export default recommendationRepository;

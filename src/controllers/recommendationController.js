@@ -47,10 +47,23 @@ async function getTopRecommendations(req, res, next) {
     }
 }
 
+async function getRandomRecommendation(req, res, next) {
+    try {
+        const response = await recommendationService.randomRecommendation();
+        return res.send(response);
+    } catch (error) {
+        if (errorIsKnown(error)) {
+            return res.status(error.statusCode).send(error.message);
+        }
+        return next(error);
+    }
+}
+
 const recommendationController = {
     postRecommendation,
     postVote,
     getTopRecommendations,
+    getRandomRecommendation,
 };
 
 export default recommendationController;
