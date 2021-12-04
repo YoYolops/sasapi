@@ -7,7 +7,6 @@ async function find(name, artist) {
         'SELECT * FROM songs WHERE name = $1 AND artist = $2;',
         [name, artist],
     );
-
     return dbResponse.rows[0];
 }
 
@@ -16,7 +15,6 @@ async function findById(id) {
         'SELECT * FROM songs WHERE id = $1',
         [id],
     );
-
     return dbResponse.rows;
 }
 
@@ -25,7 +23,6 @@ async function create(name, artist, youtubelink) {
         'INSERT INTO songs (name, artist, ytlink) VALUES ($1, $2, $3) RETURNING *;',
         [name, artist, youtubelink],
     );
-
     return dbResponse.rows[0];
 }
 
@@ -34,7 +31,6 @@ async function changeScore(songId, value, type) {
         `UPDATE songs SET score = score ${type === 'upvote' ? '+' : '-'} ${value} WHERE id = $1 RETURNING *;`,
         [songId],
     );
-
     return dbResponse.rows[0];
 }
 
@@ -43,8 +39,15 @@ async function deleteById(songId) {
         'DELETE FROM songs WHERE id = $1 RETURNING *;',
         [songId],
     );
-
     return dbResponse.rows[0];
+}
+
+async function getTop(amount) {
+    const dbResult = await connection.query(
+        'SELECT * FROM songs ORDER BY score DESC LIMIT $1;',
+        [amount],
+    );
+    return dbResult.rows;
 }
 
 const recommendationRepository = {
@@ -53,6 +56,7 @@ const recommendationRepository = {
     findById,
     changeScore,
     deleteById,
+    getTop,
 };
 
 export default recommendationRepository;

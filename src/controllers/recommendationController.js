@@ -31,9 +31,26 @@ async function postVote(req, res, next) {
     }
 }
 
+async function getTopRecommendations(req, res, next) {
+    const { amount } = req.params;
+
+    if (!Number(amount)) return res.sendStatus(422);
+
+    try {
+        const topRecommendations = await recommendationService.topRecommendations(amount);
+        return res.send(topRecommendations);
+    } catch (error) {
+        if (errorIsKnown(error)) {
+            return res.status(error.statusCode).send(error.message);
+        }
+        return next(error);
+    }
+}
+
 const recommendationController = {
     postRecommendation,
     postVote,
+    getTopRecommendations,
 };
 
 export default recommendationController;

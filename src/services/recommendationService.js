@@ -64,9 +64,21 @@ async function vote(songId, value, type) {
     return voteResult;
 }
 
+async function topRecommendations(amount) {
+    const recommendations = await recommendationRepository.getTop(amount);
+    const formattedData = recommendations.map((obj) => ({
+        id: obj.id,
+        name: `${obj.artist} - ${obj.name}`,
+        youtubelink: obj.ytlink,
+        score: obj.score,
+    }));
+    return formattedData;
+}
+
 const recommendationService = {
     register,
     vote,
+    topRecommendations,
 };
 
 export default recommendationService;
