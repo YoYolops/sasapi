@@ -20,9 +20,10 @@ Sing me a song é uma API para recomendação anômina de músicas. Quanto mais 
 
 A API possui as seguintes rotas:
 
-- **POST `/recommendations`**
+<details>
+    <summary><strong>POST</strong>  /recommendations</summary>
     
-    Adiciona uma nova recomendação de música. A requisição deve ter o seguinte formato:
+* Adiciona uma nova recomendação de música. A requisição deve ter o seguinte formato:
     
     ```json
     {
@@ -44,38 +45,49 @@ A API possui as seguintes rotas:
               "youtubeLink": "https://www.youtube.com/watch?v=ok-plXXHlWw"
             }
             ```
+</details> 
+
+<details>
+    <summary><strong>POST</strong>  /recommendations/:id/upvote</summary>
     
-- **POST `/recommendations/:id/upvote`**
+- Adiciona um ponto à pontuação da recomendação. Não espera nada no corpo.
+- Retorna o objeto com o score atualizado
+</details> 
+
+<details>
+    <summary><strong>POST</strong> /recommendations/:id/downvote</summary>
     
-    Adiciona um ponto à pontuação da recomendação. Não espera nada no corpo.
-    Retorna o objeto com o score atualizado
+- Remove um ponto da pontuação da recomendação. Não espera nada no corpo.
+- Se a pontuação fica abaixo de -5, a recomendação será excluída.
+- Retorna o objeto com o score atualizado
+</details>
+
+<details>
+    <summary><strong>GET</strong> /recommendations/random</summary>
     
-- **POST `/recommendations/:id/downvote`**
-    - Remove um ponto da pontuação da recomendação. Não espera nada no corpo.
-    - Se a pontuação fica abaixo de -5, a recomendação será excluída.
-    - Retorna o objeto com o score atualizado
-- **GET `/recommendations/random`**
+> Pega uma recomendação aleatória, baseada na seguinte lógica:
+
+- **70% das vezes que baterem nessa rota**: uma música com pontuação maior que 10 será recomendada aleatoriamente;
+- **30% das vezes que baterem nessa rota**: uma música com pontuação entre -5 e 10 (inclusive), deve ser recomendada aleatoriamente;
+- Caso só haja músicas com pontuação acima de 10 ou somente abaixo/igual a 10, será sorteada qualquer música, independente de score;
+- Caso não haja nenhuma música cadastrada, será retornado status 404;
+
+- A resposta terá o formato:
+
+        {
+          "id": 5,
+          "name": "Falamansa - Xote dos Milagres",
+          "score": 42,
+          "youtubeLink": "https://www.youtube.com/watch?v=ok-plXXHlWw"
+        }
+</details>
+
+
+<details>
+    <summary><strong>GET</strong> /recommendations/top/:amount</summary>
     
-    Pega uma recomendação aleatória, baseada na seguinte lógica:
-    
-    - **70% das vezes que baterem nessa rota**: uma música com pontuação maior que 10 será recomendada aleatoriamente;
-    - **30% das vezes que baterem nessa rota**: uma música com pontuação entre -5 e 10 (inclusive), deve ser recomendada aleatoriamente;
-    - Caso só haja músicas com pontuação acima de 10 ou somente abaixo/igual a 10, será sorteada qualquer música, independente de score;
-    - Caso não haja nenhuma música cadastrada, será retornado status 404;
-    
-    - A resposta terá o formato:
-    
-            {
-              "id": 5,
-              "name": "Falamansa - Xote dos Milagres",
-              "score": 42,
-              "youtubeLink": "https://www.youtube.com/watch?v=ok-plXXHlWw"
-            }
-    
-- **GET `/recommendations/top/:amount`**
-    
-    Lista as músicas com maior número de pontos e sua pontuação. Retorna as top x músicas (parâmetro `:amount` da rota), ordenadas por pontuação
-    (maiores   primeiro)
+> Lista as músicas com maior número de pontos e sua pontuação. Retorna as top x músicas (parâmetro `:amount` da rota), ordenadas por pontuação
+(maiores   primeiro)
     
             [
                 {
@@ -92,3 +104,4 @@ A API possui as seguintes rotas:
                 },
                 ...
             ]
+</details>
