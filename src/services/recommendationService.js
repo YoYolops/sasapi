@@ -2,6 +2,8 @@ import recommendationSchema from '../schemas/recommendationSchema.js';
 import UnformattedDataError from '../errors/UnformattedDataError.js';
 import recommendationRepository from '../repositories/recommendationRepository.js';
 import ConflictError from '../errors/ConflictError.js';
+import NotFoundError from '../errors/NotFoundError.js';
+
 /**
  * This is a local function used to verify if the inserted link is from youtube, since Joi does not
  * check the domain
@@ -51,8 +53,20 @@ async function register(body) {
     return response;
 }
 
+async function vote(songId, value, type) {
+    const songDoesExist = await recommendationRepository.findById(songId);
+    if (!songDoesExist.length) throw new NotFoundError('The id provided does not match any registered recommendation');
+
+    const voteResult = await recommendationRepository.changeScore(songId, value, type);
+    if (!voteResult) throw new NotFoundError('The song was deleted before the vote could be computed');
+
+    if (voteResult.score < -5) await recommendationRepository.deleteById(voteResult.id);
+    return voteResult;
+}
+
 const recommendationService = {
     register,
+    vote,
 };
 
 export default recommendationService;
