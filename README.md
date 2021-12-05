@@ -12,6 +12,11 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Jest](https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white)
 
+## Cobertura de testes
+<p align="center" >
+    <img src="./assets/coverage.jpeg" width="100%"/>
+</p>
+
 ## Descrição
 
 Já pediu para alguém alguma recomendação de música? Foi para isso que construímos esta API.
