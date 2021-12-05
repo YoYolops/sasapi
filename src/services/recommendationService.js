@@ -49,7 +49,7 @@ async function register(body) {
     const dataValidation = validateRecommendationBody(body);
     if (!dataValidation.isValid) throw new UnformattedDataError(dataValidation.message);
 
-    const { name, youtubelink } = body;
+    const { name, youtubeLink } = body;
 
     const splittedName = name.split(' - ');
     const artist = splittedName[0];
@@ -58,7 +58,7 @@ async function register(body) {
     const alreadyRegisteredSong = await recommendationRepository.findByName(song, artist);
     if (alreadyRegisteredSong) throw new ConflictError('This song is already registered');
 
-    const response = await recommendationRepository.create(song, artist, youtubelink);
+    const response = await recommendationRepository.create(song, artist, youtubeLink);
     return formatResponseData(response);
 }
 

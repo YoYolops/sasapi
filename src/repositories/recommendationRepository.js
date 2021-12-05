@@ -18,10 +18,10 @@ async function findById(id) {
     return dbResponse.rows[0];
 }
 
-async function create(name, artist, youtubelink) {
+async function create(name, artist, youtubeLink) {
     const dbResponse = await connection.query(
         'INSERT INTO songs (name, artist, ytlink) VALUES ($1, $2, $3) RETURNING *;',
-        [name, artist, youtubelink],
+        [name, artist, youtubeLink],
     );
 
     const createdEntity = dbResponse.rows[0];

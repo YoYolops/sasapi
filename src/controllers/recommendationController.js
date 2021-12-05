@@ -2,7 +2,7 @@ import recommendationService from '../services/recommendationService.js';
 import errorIsKnown from './errorDetectorHelper.js';
 
 async function postRecommendation(req, res, next) {
-    if (!req.body.name || !req.body.youtubelink) return res.sendStatus(400);
+    if (!req.body.name || !req.body.youtubeLink) return res.sendStatus(400);
 
     try {
         const response = await recommendationService.register(req.body);
