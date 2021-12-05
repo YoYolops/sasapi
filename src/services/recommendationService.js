@@ -19,10 +19,10 @@ function validateRecommendationBody(body) {
             message: 'Unformatted entity',
         };
     }
-    if (!body.youtubelink.includes('youtube')) {
+    if (!body.youtubeLink.includes('www.youtube.com')) {
         return {
             isValid: false,
-            message: 'youtubelink property should be a youtube domain url',
+            message: 'youtubeLink property should be a youtube domain url',
         };
     }
     if (!body.name.includes(' - ')) {
@@ -36,6 +36,15 @@ function validateRecommendationBody(body) {
     };
 }
 
+function formatResponseData(data) {
+    return {
+        id: data.id,
+        name: `${data.artist} - ${data.name}`,
+        youtubeLink: data.ytlink,
+        score: data.score,
+    };
+}
+
 async function register(body) {
     const dataValidation = validateRecommendationBody(body);
     if (!dataValidation.isValid) throw new UnformattedDataError(dataValidation.message);
@@ -46,50 +55,34 @@ async function register(body) {
     const artist = splittedName[0];
     const song = splittedName[1];
 
-    const alreadyRegisteredSong = await recommendationRepository.find(song, artist);
+    const alreadyRegisteredSong = await recommendationRepository.findByName(song, artist);
     if (alreadyRegisteredSong) throw new ConflictError('This song is already registered');
 
     const response = await recommendationRepository.create(song, artist, youtubelink);
-    const formattedData = {
-        id: response.id,
-        name: `${response.artist} - ${response.name}`,
-        youtubeLink: response.ytlink,
-        score: response.score,
-    };
-    return formattedData;
+    return formatResponseData(response);
 }
 
 async function vote(songId, value, type) {
     const songDoesExist = await recommendationRepository.findById(songId);
-    if (!songDoesExist.length) throw new NotFoundError('The id provided does not match any registered recommendation');
+    if (!songDoesExist) throw new NotFoundError('The id provided does not match any registered recommendation');
 
     const voteResult = await recommendationRepository.changeScore(songId, value, type);
     if (!voteResult) throw new NotFoundError('The song was deleted before the vote could be computed');
 
-    if (voteResult.score < -5) await recommendationRepository.deleteById(voteResult.id);
-    const formattedData = {
-        id: voteResult.id,
-        name: `${voteResult.artist} - ${voteResult.name}`,
-        youtubeLink: voteResult.ytlink,
-        score: voteResult.score,
-    };
-    return formattedData;
+    if (voteResult.score < -5) {
+        await recommendationRepository.deleteById(voteResult.id);
+        return {};
+    }
+    return formatResponseData(voteResult);
 }
 
 async function topRecommendations(amount) {
     const recommendations = await recommendationRepository.getTop(amount);
-    const formattedData = recommendations.map((obj) => ({
-        id: obj.id,
-        name: `${obj.artist} - ${obj.name}`,
-        youtubeLink: obj.ytlink,
-        score: obj.score,
-    }));
+    const formattedData = recommendations.map((obj) => formatResponseData(obj));
     return formattedData;
 }
 
-async function randomRecommendation() {
-    const random = Math.random();
-
+async function randomRecommendation(random) {
     let drawn;
     if (random <= 0.3) {
         drawn = await recommendationRepository.getRandom('score < 11');
@@ -100,13 +93,7 @@ async function randomRecommendation() {
     if (!drawn) drawn = await recommendationRepository.getRandom();
     if (!drawn) throw new NotFoundError('There is not any song registered yet');
 
-    const formattedData = {
-        id: drawn.id,
-        name: `${drawn.artist} - ${drawn.name}`,
-        youtubeLink: drawn.ytlink,
-        score: drawn.score,
-    };
-    return formattedData;
+    return formatResponseData(drawn);
 }
 
 const recommendationService = {
@@ -114,6 +101,8 @@ const recommendationService = {
     vote,
     topRecommendations,
     randomRecommendation,
+    validateRecommendationBody,
+    formatResponseData,
 };
 
 export default recommendationService;

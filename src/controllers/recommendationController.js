@@ -49,7 +49,7 @@ async function getTopRecommendations(req, res, next) {
 
 async function getRandomRecommendation(req, res, next) {
     try {
-        const response = await recommendationService.randomRecommendation();
+        const response = await recommendationService.randomRecommendation(Math.random());
         return res.send(response);
     } catch (error) {
         if (errorIsKnown(error)) {

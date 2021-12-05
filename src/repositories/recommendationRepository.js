@@ -2,7 +2,7 @@ import connection from '../database/connection.js';
 
 // since different artists may have a song with the same name,
 // this functions verify both artist's and song's name
-async function find(name, artist) {
+async function findByName(name, artist) {
     const dbResponse = await connection.query(
         'SELECT * FROM songs WHERE name = $1 AND artist = $2;',
         [name, artist],
@@ -15,7 +15,7 @@ async function findById(id) {
         'SELECT * FROM songs WHERE id = $1',
         [id],
     );
-    return dbResponse.rows;
+    return dbResponse.rows[0];
 }
 
 async function create(name, artist, youtubelink) {
@@ -65,7 +65,7 @@ async function getRandom(where) {
 
 const recommendationRepository = {
     create,
-    find,
+    findByName,
     findById,
     changeScore,
     deleteById,
