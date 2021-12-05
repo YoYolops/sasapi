@@ -14,7 +14,7 @@
 
 ## Cobertura de testes
 <p align="center" >
-    <img src="./assets/coverage.jpeg" width="100%"/>
+    <img src="./assets/coverage.jpeg" width="70%"/>
 </p>
 
 ## Descrição
